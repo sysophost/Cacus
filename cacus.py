@@ -41,11 +41,11 @@ def main():
 
                 report_issues = [*report_issues, *compliance_issues]
 
-        # sort issues by name
-        report_issues = sorted(report_issues, key=lambda x: x.name)
-        headers = ['Host', 'Check Name', 'Configured Value', 'Expected Value', 'Info', 'Solution', 'Result']
-        output.write_output(ARGS.outputfile, headers, report_issues, ARGS.outputdelim)
-        logging.info(f"[i] Output file written to: {ARGS.outputfile}")
+            # sort issues by name
+            report_issues = sorted(report_issues, key=lambda x: x.name)
+            headers = ['Host', 'Check Name', 'Configured Value', 'Expected Value', 'Info', 'Solution', 'Result']
+            output.write_output(ARGS.outputfile, headers, report_issues, ARGS.outputdelim)
+            logging.info(f"[i] Output file written to: {ARGS.outputfile}")
 
     except Exception as err:
         logging.error(f"[!] {err}")
