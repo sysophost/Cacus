@@ -26,10 +26,11 @@ def main():
         # iterate through all Report elements within the provided .nessus file
         for report in xml_doc.findall('Report'):
             report_hosts = parser.parse_hosts(report)
+
+            report_issues = list()
             for host in report_hosts:
                 logging.info(f"[i] Parsing compliance issues for host: {host.get('name')}")
                 compliance_issues = parser.parse_compliance(host, xml_namespaces)
-                compliance_issues = sorted(compliance_issues, key=lambda x: x.name)
 
                 passed = list(filter(lambda x: x.result == 'PASSED', compliance_issues))
                 failed = list(filter(lambda x: x.result == 'FAILED', compliance_issues))
@@ -38,9 +39,13 @@ def main():
                 compliance_issues = list(filter(lambda x: x.result in ['PASSED', 'FAILED'], compliance_issues))
                 logging.info(f"[i] Found {len(compliance_issues)} compliance issues\n\tPassed:{len(passed)}\n\tFailed:{len(failed)}")
 
-                headers = ['Host', 'Check Name', 'Configured Value', 'Expected Value', 'Info', 'Solution', 'Result']
-                output.write_output(ARGS.outputfile, headers, compliance_issues, ARGS.outputdelim)
-                logging.info(f"[i] Output file written to: {ARGS.outputfile}")
+                report_issues = [*report_issues, *compliance_issues]
+
+        # sort issues by name
+        report_issues = sorted(report_issues, key=lambda x: x.name)
+        headers = ['Host', 'Check Name', 'Configured Value', 'Expected Value', 'Info', 'Solution', 'Result']
+        output.write_output(ARGS.outputfile, headers, report_issues, ARGS.outputdelim)
+        logging.info(f"[i] Output file written to: {ARGS.outputfile}")
 
     except Exception as err:
         logging.error(f"[!] {err}")
