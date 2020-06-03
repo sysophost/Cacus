@@ -8,7 +8,7 @@ from modules import output, parser
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--inputfile', '-if', type=str, required=True, help='Path to input .nessus file')
 PARSER.add_argument('--outputfile', '-of', type=str, default='./compliance_results.csv', help='Path to output CSV file')
-PARSER.add_argument('--outdelim', '-od', type=str, default=',', help='Output file delimiter (default: "%(default)s")')
+PARSER.add_argument('--outputdelim', '-od', type=str, default=',', help='Output file delimiter (default: "%(default)s")')
 ARGS = PARSER.parse_args()
 
 logging.basicConfig(format='%(message)s', level=logging.INFO, stream=sys.stderr)
@@ -39,7 +39,7 @@ def main():
                 logging.info(f"[i] Found {len(compliance_issues)} compliance issues\n\tPassed:{len(passed)}\n\tFailed:{len(failed)}")
 
                 headers = ['Host', 'Check Name', 'Configured Value', 'Expected Value', 'Info', 'Solution', 'Result']
-                output.write_output(ARGS.outputfile, headers, compliance_issues, ARGS.outdelim)
+                output.write_output(ARGS.outputfile, headers, compliance_issues, ARGS.outputdelim)
                 logging.info(f"[i] Output file written to: {ARGS.outputfile}")
 
     except Exception as err:
