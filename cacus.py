@@ -15,7 +15,6 @@ logging.basicConfig(format='%(message)s', level=logging.INFO, stream=sys.stderr)
 
 
 def main():
-
     # define namespaces for non-default elements to stop search breaking
     ns = {'cm': 'http://www.nessus.org/cm'}
 
