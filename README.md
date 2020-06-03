@@ -26,3 +26,4 @@ Use in conjunction with `--outputfile` to specify the file delimiter to use (def
 * ~~Support multiple hosts in a single `.nessus`~~ and aggregate results
 * Support multiple reports in a single `.nessus` file
 * Make the output a bit prettier and remove ugly whitespace in the output file
+* Generate summary for each host with pass/fail count and percentage
