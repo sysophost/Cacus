@@ -23,6 +23,6 @@ Use in conjunction with `--outputfile` to specify the file delimiter to use (def
 *If you want to use tab as a delimiter you have to specify it as `--outputdelim $'\t'`*
 
 ## TODO
-* Support multiple hosts in a single `.nessus` and aggregate results
+* ~~Support multiple hosts in a single `.nessus`~~ and aggregate results
 * Support multiple reports in a single `.nessus` file
 * Make the output a bit prettier and remove ugly whitespace in the output file
