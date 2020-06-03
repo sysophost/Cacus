@@ -1,5 +1,5 @@
 # Cacus
-Tool to extract CIS compliance results from .nessus files
+Tool to extract CIS compliance results from `.nessus` files
 
 This was knocked together very quickly so currently only supports exporting results for a single host from the supplied `.nessus` file.  If your file has multiple hosts, or multiple report entries, the final item will clobber the output of the rest
 
