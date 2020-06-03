@@ -16,7 +16,7 @@ logging.basicConfig(format='%(message)s', level=logging.INFO, stream=sys.stderr)
 
 def main():
     # define namespaces for non-default elements to stop search breaking
-    ns = {'cm': 'http://www.nessus.org/cm'}
+    xml_namespaces = {'cm': 'http://www.nessus.org/cm'}
 
     logging.info(f"[i] Reading file from: {ARGS.inputfile}")
     try:
@@ -28,14 +28,14 @@ def main():
             report_hosts = parser.parse_hosts(report)
             for host in report_hosts:
                 logging.info(f"[i] Parsing compliance issues for host: {host.get('name')}")
-                compliance_issues = parser.parse_compliance(host, ns)
+                compliance_issues = parser.parse_compliance(host, xml_namespaces)
                 compliance_issues = sorted(compliance_issues, key=lambda x: x.name)
 
-                passed = list(filter(lambda x: x.result == 'PASSED',  compliance_issues))
-                failed = list(filter(lambda x: x.result == 'FAILED',  compliance_issues))
+                passed = list(filter(lambda x: x.result == 'PASSED', compliance_issues))
+                failed = list(filter(lambda x: x.result == 'FAILED', compliance_issues))
 
                 # strip out anything with a status of WARNING
-                compliance_issues = list(filter(lambda x: x.result in ['PASSED', 'FAILED'],  compliance_issues))
+                compliance_issues = list(filter(lambda x: x.result in ['PASSED', 'FAILED'], compliance_issues))
                 logging.info(f"[i] Found {len(compliance_issues)} compliance issues\n\tPassed:{len(passed)}\n\tFailed:{len(failed)}")
 
                 headers = ['Host', 'Check Name', 'Configured Value', 'Expected Value', 'Info', 'Solution', 'Result']
