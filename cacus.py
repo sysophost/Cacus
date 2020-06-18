@@ -35,8 +35,8 @@ def main():
                 passed = list(filter(lambda x: x.result == 'PASSED', compliance_issues))
                 failed = list(filter(lambda x: x.result == 'FAILED', compliance_issues))
 
-                passed_percent = round(len(passed) / len(compliance_issues) * 100, 2)
-                failed_percent = round(len(failed) / len(compliance_issues) * 100, 2)
+                passed_percent = round(len(passed) / len(compliance_issues) * 100, 2) if len(passed) > 0 else 0
+                failed_percent = round(len(failed) / len(compliance_issues) * 100, 2) if len(failed) > 0 else 0
 
                 # strip out anything with a status of WARNING
                 compliance_issues = list(filter(lambda x: x.result in ['PASSED', 'FAILED'], compliance_issues))
