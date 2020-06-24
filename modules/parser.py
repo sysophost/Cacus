@@ -35,25 +35,25 @@ def parse_compliance(report_host: ET.Element, ns: dict) -> list:
     host_properties = report_host.find('HostProperties')
     report_items = report_host.findall('ReportItem')
 
-    issues = list()
+    compliance_issues = list(filter(lambda x: x.attrib['pluginFamily'] == 'Policy Compliance', report_items))
+    parsed_issues = list()
 
-    for ri in report_items:
-        if ri.attrib['pluginFamily'] == 'Policy Compliance':
-            hostname = report_host.get('name')
-            name = getattr(ri.find('cm:compliance-check-name', ns), 'text', 'n/a')
-            configured_value = getattr(ri.find('cm:compliance-actual-value', ns), 'text', 'n/a')
-            expected_value = getattr(ri.find('cm:compliance-policy-value', ns), 'text', 'n/a')
-            expected_value = expected_value.replace('expect: ', '')
-            info = getattr(ri.find('cm:compliance-info', ns), 'text', 'n/a')
-            result = getattr(ri.find('cm:compliance-result', ns), 'text', 'n/a')
+    for item in compliance_issues:
+        hostname = report_host.get('name')
+        name = getattr(item.find('cm:compliance-check-name', ns), 'text', 'n/a')
+        configured_value = getattr(item.find('cm:compliance-actual-value', ns), 'text', 'n/a')
+        expected_value = getattr(item.find('cm:compliance-policy-value', ns), 'text', 'n/a')
+        expected_value = expected_value.replace('expect: ', '')
+        info = getattr(item.find('cm:compliance-info', ns), 'text', 'n/a')
+        result = getattr(item.find('cm:compliance-result', ns), 'text', 'n/a')
 
-            # overwrite solution with n/a if result is PASSED
-            if result == 'PASSED':
-                solution = 'n/a'
-            else:
-                solution = getattr(ri.find('cm:compliance-solution', ns), 'text', 'n/a')
+        # overwrite solution with n/a if result is PASSED
+        if result == 'PASSED':
+            solution = 'n/a'
+        else:
+            solution = getattr(item.find('cm:compliance-solution', ns), 'text', 'n/a')
 
-            issue = ci.Compliance_Issue(hostname, name, configured_value, expected_value, info, solution, result)
-            issues.append(issue)
+        issue = ci.Compliance_Issue(hostname, name, configured_value, expected_value, info, solution, result)
+        parsed_issues.append(issue)
 
-    return issues
+    return parsed_issues
