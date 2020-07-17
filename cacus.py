@@ -38,10 +38,12 @@ def main():
                 passed_percent = round(len(passed) / len(compliance_issues) * 100, 2) if len(passed) > 0 else 0
                 failed_percent = round(len(failed) / len(compliance_issues) * 100, 2) if len(failed) > 0 else 0
 
-                # strip out anything with a status of WARNING
+                # strip out anything with a status of WARNING or ERROR
                 compliance_issues = list(filter(lambda x: x.result in ['PASSED', 'FAILED'], compliance_issues))
-                logging.info(
-                    f"[i] Found {len(compliance_issues)} compliance issues\n\tPassed: {len(passed)} ({passed_percent}%)\n\tFailed: {len(failed)} ({failed_percent}%)")
+
+                # Remove the last element from the list that just contains info about what compliance check was run
+                compliance_issues.pop()
+                logging.info(f"[i] Found {len(compliance_issues)} compliance issues\n\tPassed: {len(passed)} ({passed_percent}%)\n\tFailed: {len(failed)} ({failed_percent}%)")
 
                 report_issues = [*report_issues, *compliance_issues]
 
