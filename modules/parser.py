@@ -1,4 +1,5 @@
 import logging
+import math
 from xml.etree import ElementTree as ET
 
 from models import compliance_issue as ci
@@ -57,3 +58,39 @@ def parse_compliance(report_host: ET.Element, ns: dict) -> list:
         parsed_issues.append(issue)
 
     return parsed_issues
+
+
+def aggregate_issues(report_issues: list) -> list:
+    """
+    Aggregate issues by host
+
+    Args:
+        report_issues (list): List of compliance issues to aggregate
+
+    Returns:
+        list: List of issues aggregated by host
+    """
+
+    aggregated_issues = list()
+
+    unique_issue_titles = set(i.name for i in report_issues)
+    for issue in unique_issue_titles:
+        issue_passed = list(filter(lambda x: x.name == issue and x.result == 'PASSED', report_issues))
+        if issue_passed:
+            pass_host_count = len(list(i.hostname for i in issue_passed))
+            pass_config = '\n'.join(i.configured_value for i in issue_passed)
+            padding = math.ceil(pass_config.count('\n') / pass_host_count)
+            pass_hostnames = ('\n' * padding).join(i.hostname for i in issue_passed)
+            pass_issue = ci.Compliance_Issue(pass_hostnames, issue_passed[0].name, pass_config, issue_passed[0].expected_value, issue_passed[0].info, issue_passed[0].solution, 'PASSED')
+            aggregated_issues.append(pass_issue)
+
+        issue_failed = list(filter(lambda x: x.name == issue and x.result == 'FAILED', report_issues))
+        if issue_failed:
+            fail_host_count = len(list(i.hostname for i in issue_failed))
+            fail_config = '\n'.join(i.configured_value for i in issue_failed)
+            padding = math.ceil(fail_config.count('\n') / 2)
+            fail_hostnames = ('\n' * padding).join(i.hostname for i in issue_failed)
+            fail_issue = ci.Compliance_Issue(fail_hostnames, issue_failed[0].name, fail_config, issue_failed[0].expected_value, issue_failed[0].info, issue_failed[0].solution, 'FAILED')
+            aggregated_issues.append(fail_issue)
+
+    return aggregated_issues

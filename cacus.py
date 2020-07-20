@@ -9,6 +9,7 @@ PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--inputfile', '-if', type=str, required=True, help='Path to input .nessus file')
 PARSER.add_argument('--outputfile', '-of', type=str, default='./compliance_results.csv', help='Path to output CSV file')
 PARSER.add_argument('--outputdelim', '-od', type=str, default=',', help='Output file delimiter (default: "%(default)s")')
+PARSER.add_argument('--aggregate', '-ag', action='store_true', help='Aggregate issues')
 ARGS = PARSER.parse_args()
 
 logging.basicConfig(format='%(message)s', level=logging.INFO, stream=sys.stderr)
@@ -32,9 +33,11 @@ def main():
                 logging.info(f"[i] Parsing compliance issues for host: {host.get('name')}")
                 compliance_issues = parser.parse_compliance(host, xml_namespaces)
 
+                # get lists for pass/fail items
                 passed = list(filter(lambda x: x.result == 'PASSED', compliance_issues))
                 failed = list(filter(lambda x: x.result == 'FAILED', compliance_issues))
 
+                # get pass/fail percentages
                 passed_percent = round(len(passed) / len(compliance_issues) * 100, 2) if len(passed) > 0 else 0
                 failed_percent = round(len(failed) / len(compliance_issues) * 100, 2) if len(failed) > 0 else 0
 
@@ -45,11 +48,18 @@ def main():
                 compliance_issues.pop()
                 logging.info(f"[i] Found {len(compliance_issues)} compliance issues\n\tPassed: {len(passed)} ({passed_percent}%)\n\tFailed: {len(failed)} ({failed_percent}%)")
 
+                # append list of issues from this host to overall list
                 report_issues = [*report_issues, *compliance_issues]
+
+                # TESTING
+                report_issues = [*report_issues, *compliance_issues]
+
+            if ARGS.aggregate:
+                report_issues = parser.aggregate_issues(report_issues)
 
             # sort issues by name
             report_issues = sorted(report_issues, key=lambda x: x.name)
-            headers = ['Host', 'Check Name', 'Configured Value', 'Expected Value', 'Info', 'Solution', 'Result']
+            headers = ['Check Name', 'Host', 'Configured Value', 'Expected Value', 'Info', 'Solution', 'Result']
             output.write_output(ARGS.outputfile, headers, report_issues, ARGS.outputdelim)
             logging.info(f"[i] Output file written to: {ARGS.outputfile}")
 
