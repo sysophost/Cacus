@@ -30,6 +30,10 @@ Use in conjunction with `--outputfile` to specify the file delimiter to use (def
 
 Aggregate issues by host
 
+`--nopadding` / `-np`
+
+Disable vertical padding between aggregated hosts
+
 ## TODO
 
 * ~~Support multiple hosts in a single `.nessus`~~ and aggregate results
