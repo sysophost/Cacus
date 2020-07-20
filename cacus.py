@@ -51,9 +51,6 @@ def main():
                 # append list of issues from this host to overall list
                 report_issues = [*report_issues, *compliance_issues]
 
-                # TESTING
-                report_issues = [*report_issues, *compliance_issues]
-
             if ARGS.aggregate:
                 report_issues = parser.aggregate_issues(report_issues)
 
