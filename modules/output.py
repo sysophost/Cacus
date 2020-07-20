@@ -21,7 +21,7 @@ def write_output(output_path: str, headers: list, output_objects: list, delim: s
             csv_writer.writerow(headers)
 
             for issue in output_objects:
-                csv_writer.writerow([issue.hostname, issue.name, issue.configured_value, issue.expected_value, issue.info, issue.solution, issue.result])
+                csv_writer.writerow([issue.name, issue.hostname, issue.configured_value, issue.expected_value, issue.info, issue.solution, issue.result])
 
     except Exception as err:
         raise err
