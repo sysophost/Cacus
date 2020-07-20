@@ -10,6 +10,7 @@ PARSER.add_argument('--inputfile', '-if', type=str, required=True, help='Path to
 PARSER.add_argument('--outputfile', '-of', type=str, default='./compliance_results.csv', help='Path to output CSV file')
 PARSER.add_argument('--outputdelim', '-od', type=str, default=',', help='Output file delimiter (default: "%(default)s")')
 PARSER.add_argument('--aggregate', '-ag', action='store_true', help='Aggregate issues')
+PARSER.add_argument('--nopadding', '-np', action='store_true', help='Disable padding between aggregated hosts')
 ARGS = PARSER.parse_args()
 
 logging.basicConfig(format='%(message)s', level=logging.INFO, stream=sys.stderr)
@@ -52,7 +53,7 @@ def main():
                 report_issues = [*report_issues, *compliance_issues]
 
             if ARGS.aggregate:
-                report_issues = parser.aggregate_issues(report_issues)
+                report_issues = parser.aggregate_issues(report_issues, ARGS.nopadding)
 
             # sort issues by name
             report_issues = sorted(report_issues, key=lambda x: x.name)
