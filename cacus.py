@@ -1,13 +1,14 @@
 import argparse
 import logging
 import sys
+from datetime import datetime
 from xml.etree import ElementTree as ET
 
 from modules import output, parser
 
 PARSER = argparse.ArgumentParser()
 PARSER.add_argument('--inputfile', '-if', type=str, required=True, help='Path to input .nessus file')
-PARSER.add_argument('--outputfile', '-of', type=str, default='./compliance_results.csv', help='Path to output CSV file')
+PARSER.add_argument('--outputfile', '-of', type=str, default=f"./compliance_results_{datetime.today().strftime('%Y_%m_%d_%H%M')}.csv", help='Path to output CSV file (default: "%(default)s")')
 PARSER.add_argument('--outputdelim', '-od', type=str, default=',', help='Output file delimiter (default: "%(default)s")')
 PARSER.add_argument('--aggregate', '-ag', action='store_true', help='Aggregate issues')
 PARSER.add_argument('--nopadding', '-np', action='store_true', help='Disable padding between aggregated hosts')
